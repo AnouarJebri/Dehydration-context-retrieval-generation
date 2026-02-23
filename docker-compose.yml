@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "${QDRANT_PORT}:${QDRANT_PORT}"
+    restart: unless-stopped
+    networks:
+      - rag_network
+
+  neo4j:
+    image: neo4j:latest
+    environment:
+      - NEO4J_AUTH: neo4j/password
+    ports:
+      - "${NEO4J_PORT_HOST_WEB}:${NEO4J_PORT_RN_WEB}"
+      - "${NEO4J_PORT_HOST_DB}:${NEO4J_PORT_RN_DB}"
+    restart: unless-stopped
+    networks:
+      - rag_network
+    volumes:
+      - ./knowledge_base/neo4j/data:/data
+      - ./knowledge_base/neo4j/logs:/logs
+      - ./knowledge_base/neo4j/import:/import
+      - ./knowledge_base/neo4j/plugins:/plugins
+
+networks:
+  rag_network:
+    driver: bridge
