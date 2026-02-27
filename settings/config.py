@@ -1,6 +1,8 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from qdrant_client import QdrantClient
+from neo4j import GraphDatabase
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 ENV_PATH = BASE_DIR / ".env"
@@ -15,5 +17,10 @@ class Settings:
     VERSION: str = os.getenv("VERSION")
     PORT: int = int(os.getenv("PORT"))
     NEO4J_PORT_RN_DB: int = int(os.getenv("NEO4J_PORT_RN_DB"))
+    COLLECTION: str = os.getenv("COLLECTION")
 
 settings = Settings()
+client = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
+driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASS))
+MIN_EVIDENCE_SCORE = 0.45
+VISUAL_WEIGHT = 0.6

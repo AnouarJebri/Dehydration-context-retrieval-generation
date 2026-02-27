@@ -1,15 +1,13 @@
-from qdrant_client import QdrantClient
 from qdrant_client.models import PointStruct, VectorParams
-from app.config import COLLECTION, QDRANT_HOST, QDRANT_PORT
-from app.embeddings import embed_text , text_embed_model
+from settings.config import client , settings
+from db_service.embeddings import embed_text , text_embed_model
 
-client = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
 text_dim = text_embed_model.get_sentence_embedding_dimension()
 
 def store_chunks(chunks):
     # Only text vector
     client.recreate_collection(
-        collection_name=COLLECTION,
+        collection_name=settings.COLLECTION,
         vectors_config=VectorParams(size=text_dim, distance="Cosine")
     )
 

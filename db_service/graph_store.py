@@ -1,8 +1,5 @@
-from neo4j import GraphDatabase
-from app.config import NEO4J_URI, NEO4J_USER, NEO4J_PASS
-from app.generator import generate  # Reuse Mistral
-
-driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASS))
+from settings.config import driver
+from services.generator import generate  # Reuse Mistral
 
 def extract_entities_relations(chunk: str) -> list[dict]:
     prompt = f"""
