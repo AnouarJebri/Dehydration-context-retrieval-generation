@@ -11,7 +11,7 @@ def build_prompt(agent_output, evidence):
         Score: {score:.2f}
         """
 
-            return f"""
+        return f"""
         Vous êtes un assistant clinique hospitalier spécialisé en gériatrie.
 
         RÈGLES STRICTES:

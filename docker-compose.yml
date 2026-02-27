@@ -8,6 +8,8 @@ services:
     restart: unless-stopped
     networks:
       - rag_network
+    volumes:
+      - ./knowledge_base/qdrant/storage:/qdrant/storage
 
   neo4j:
     image: neo4j:latest

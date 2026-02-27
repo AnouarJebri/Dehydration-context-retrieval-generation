@@ -7,51 +7,58 @@ import easyocr  # For OCR on diagrams
 
 reader = easyocr.Reader(['fr', 'en'])  # French/English
 
-def ingest_folder(folder="knowledge_base/"):
+def ingest_folder(folder="knowledge_base/Data/Dehydration seniors data/"):
     docs = []
-    os.makedirs("extracted_images", exist_ok=True)
 
-    for file in os.listdir(folder):
-        if not file.endswith(".pdf"):
-            continue
+    # Create a central extracted_images folder inside Data/
+    images_folder = os.path.join(os.path.dirname(folder), "extracted_images")
+    os.makedirs(images_folder, exist_ok=True)
 
-        path = os.path.join(folder, file)
+    # Walk through all subfolders
+    for root, dirs, files in os.walk(folder):
+        for file in files:
+            if not file.lower().endswith(".pdf"):
+                continue
 
-        elements = partition_pdf(
-            filename=path,
-            strategy="hi_res",
-            infer_table_structure=True,
-            extract_images_in_pdf=True,
-            languages=["fra", "eng"]
-        )
+            path = os.path.join(root, file)
 
-        for el in elements:
-            modality = "text"
-            image_path = None
-            ocr_text = ""
+            elements = partition_pdf(
+                filename=path,
+                strategy="hi_res",
+                infer_table_structure=True,
+                extract_images_in_pdf=True,
+                languages=["fra", "eng"]
+            )
 
-            if el.category in ["Image", "Figure"]:
-                modality = "diagram" if "schematic" in str(el.metadata) else "microscopy"  # Simple heuristic; improve if needed
-                if hasattr(el.metadata, "image_base64"):
-                    img_data = base64.b64decode(el.metadata.image_base64)
-                    img = Image.open(io.BytesIO(img_data))
-                    image_path = f"extracted_images/{file}_{el.id}.png"
-                    img.save(image_path)
+            for el in elements:
+                modality = "text"
+                image_path = None
+                ocr_text = ""
 
-                    # OCR for text in diagrams/flowcharts
-                    ocr_result = reader.readtext(image_path)
-                    ocr_text = " ".join([text for _, text, _ in ocr_result])
+                if el.category in ["Image", "Figure"]:
+                    modality = "diagram" if "schematic" in str(el.metadata) else "microscopy"
+                    if hasattr(el.metadata, "image_base64") and el.metadata.image_base64:
+                        img_data = base64.b64decode(el.metadata.image_base64)
+                        img = Image.open(io.BytesIO(img_data))
+                        # Save image in central folder
+                        safe_file_name = file.replace(" ", "_")  # avoid spaces in file names
+                        image_path = os.path.join(images_folder, f"{safe_file_name}_{el.id}.png")
+                        img.save(image_path)
 
-            text_content = el.text.strip() if el.text else ocr_text
+                        # OCR for text in diagrams
+                        ocr_result = reader.readtext(image_path)
+                        ocr_text = " ".join([text for _, text, _ in ocr_result])
 
-            if text_content:
-                docs.append({
-                    "content": text_content,
-                    "modality": modality,
-                    "source": file,
-                    "page": getattr(el.metadata, "page_number", None),
-                    "section": getattr(el.metadata, "section_title", "Unknown"),
-                    "image_path": image_path
-                })
+                text_content = el.text.strip() if el.text else ocr_text
+
+                if text_content:
+                    docs.append({
+                        "content": text_content,
+                        "modality": modality,
+                        "source": file,
+                        "page": getattr(el.metadata, "page_number", None),
+                        "section": getattr(el.metadata, "section_title", "Unknown"),
+                        "image_path": image_path
+                    })
 
     return docs
