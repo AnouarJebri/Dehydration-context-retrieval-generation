@@ -1,18 +1,19 @@
+from pathlib import Path
 import os
+from dotenv import load_dotenv
 
-MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
+BASE_DIR = Path(__file__).resolve().parent.parent
+ENV_PATH = BASE_DIR / ".env"
 
-QDRANT_HOST = "localhost"
-QDRANT_PORT = 6333
+load_dotenv(dotenv_path=ENV_PATH)
 
-NEO4J_URI = "bolt://localhost:7687"
-NEO4J_USER = "neo4j"
-NEO4J_PASS = "password"
+class Settings:
+    QDRANT_PORT: int = os.getenv("QDRANT_PORT")
+    NEO4J_PORT_HOST_DB: int = os.getenv("NEO4J_PORT_HOST_DB")
+    NEO4J_PASSWORD: str = os.getenv("NEO4J_PASSWORD")
+    NEO4J_USER: str = os.getenv("NEO4J_USER")
+    VERSION: str = os.getenv("VERSION")
+    PORT: int = int(os.getenv("PORT"))
+    NEO4J_PORT_RN_DB: int = int(os.getenv("NEO4J_PORT_RN_DB"))
 
-COLLECTION = "clinical_dehydration_kb"
-
-MIN_EVIDENCE_SCORE = 0.45
-VISUAL_WEIGHT = 0.6  # Boost for image_vector if query visual
-
-#All of it to be repeated
-#Create a setting class and load all of the .env in it
+settings = Settings()
