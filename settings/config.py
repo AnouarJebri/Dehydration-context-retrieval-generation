@@ -18,6 +18,7 @@ class Settings:
     PORT: int = int(os.getenv("PORT"))
     NEO4J_PORT_RN_DB: int = int(os.getenv("NEO4J_PORT_RN_DB"))
     COLLECTION: str = os.getenv("COLLECTION")
+    MISTRAL_API_KEY: str = os.getenv("MISTRAL_API_KEY")
 
 settings = Settings()
 client = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)

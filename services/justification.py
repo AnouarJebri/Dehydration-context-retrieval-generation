@@ -1,6 +1,6 @@
-from app.retriever import retrieve
-from app.prompt_builder import build_prompt
-from app.generator import generate
+from services.retriever import retrieve
+from services.prompt_builder import build_prompt
+from services.generator import generate
 
 def justify(agent_output):
     query = f"""
