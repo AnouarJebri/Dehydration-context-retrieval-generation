@@ -34,9 +34,11 @@ def ingest_folder(folder="knowledge_base/Data/Dehydration seniors data/"):
                 modality = "text"
                 image_path = None
                 ocr_text = ""
+                origin = "native_text"
 
                 if el.category in ["Image", "Figure"]:
                     modality = "diagram" if "schematic" in str(el.metadata) else "microscopy"
+                    origin = "ocr_text"
                     if hasattr(el.metadata, "image_base64") and el.metadata.image_base64:
                         img_data = base64.b64decode(el.metadata.image_base64)
                         img = Image.open(io.BytesIO(img_data))
@@ -55,6 +57,7 @@ def ingest_folder(folder="knowledge_base/Data/Dehydration seniors data/"):
                     docs.append({
                         "content": text_content,
                         "modality": modality,
+                        "origin": origin,
                         "source": file,
                         "page": getattr(el.metadata, "page_number", None),
                         "section": getattr(el.metadata, "section_title", "Unknown"),

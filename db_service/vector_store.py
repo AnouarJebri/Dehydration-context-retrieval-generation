@@ -18,10 +18,10 @@ def store_chunks(chunks):
 
         points.append(
             PointStruct(
-                id=idx,
+                id=c["chunk_id"],
                 vector=text_vec,
                 payload=c
             )
         )
 
-    client.upsert(collection_name=COLLECTION, points=points)
+    client.upsert(collection_name=settings.COLLECTION, points=points)
