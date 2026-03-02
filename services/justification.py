@@ -20,5 +20,14 @@ def justify(agent_output):
     return {
         "patient_id": agent_output["patient_id"],
         "clinical_justification": justification,
-        "evidence": [e[0][0] for e in evidence]  # Payloads
+        #"evidence": [e[0][0] for e in evidence]  # Payloads
+        "evidence": [
+            {
+                "chunk": payload["chunk"],
+                "source": payload.get("source"),
+                "page": payload.get("page"),
+                "score": score
+            }
+            for payload, score in evidence
+        ]
     }
