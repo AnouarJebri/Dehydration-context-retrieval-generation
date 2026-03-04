@@ -14,7 +14,7 @@ services:
   neo4j:
     image: neo4j:latest
     environment:
-      - NEO4J_AUTH: neo4j/password
+      NEO4J_AUTH: "${NEO4J_USER}/${NEO4J_PASSWORD}"
     ports:
       - "${NEO4J_PORT_HOST_WEB}:${NEO4J_PORT_RN_WEB}"
       - "${NEO4J_PORT_HOST_DB}:${NEO4J_PORT_RN_DB}"
