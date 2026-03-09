@@ -1,4 +1,4 @@
-# Angetek-LLM
+# Dehydration-context-retrieval-generation
 ![RAG Workflow Diagram system design beta version](system_architecture_v0.jpg)
 ---
 ## Project Structure
